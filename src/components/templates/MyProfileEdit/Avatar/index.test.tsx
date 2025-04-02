@@ -18,6 +18,8 @@ setupMockServer(handleGetMyProfile());
 
 test("「写真を変更する」ボタンがある", async () => {
   render(<TestComponent />);
+  // `findByRole` は非同期処理が完了するまで待機する関数
+  // なんでここは`getByRole`ではなく`findByRole`なの??
   expect(
     await screen.findByRole("button", { name: "写真を変更する" })
   ).toBeInTheDocument();
