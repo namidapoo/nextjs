@@ -8,9 +8,11 @@ import { PostForm } from ".";
 const user = userEvent.setup();
 
 function setup() {
+  // アサーション用に用意したモック関数（スパイ）
   const onClickSave = jest.fn();
   const onValid = jest.fn();
   const onInvalid = jest.fn();
+  // テスト対象のコンポーネントをレンダリング
   render(
     <PostForm
       title="新規記事"
@@ -19,14 +21,17 @@ function setup() {
       onInvalid={onInvalid}
     />
   );
+  // 記事タイトルを入力するインタラクション関数
   async function typeTitle(title: string) {
     const textbox = screen.getByRole("textbox", { name: "記事タイトル" });
     await user.type(textbox, title);
   }
+  // 記事を公開するインタラクション関数
   async function saveAsPublished() {
     await user.click(screen.getByRole("switch", { name: "公開ステータス" }));
     await user.click(screen.getByRole("button", { name: "記事を公開する" }));
   }
+  // 記事を下書き保存するインタラクション関数
   async function saveAsDraft() {
     await user.click(screen.getByRole("button", { name: "下書き保存する" }));
   }
@@ -45,6 +50,8 @@ setupMockServer(handleGetMyProfile());
 test("不適正内容で「下書き保存」を試みると、バリデーションエラーが表示される", async () => {
   const { saveAsDraft } = setup();
   await saveAsDraft();
+  // `waitFor` はリトライのために用意された関数
+  // バリデーションエラーが表示されるまで時間がかかるため、所定時間の間`waitFor`でアサートをリトライし続ける
   await waitFor(() =>
     expect(
       screen.getByRole("textbox", { name: "記事タイトル" })

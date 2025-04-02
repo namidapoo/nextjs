@@ -16,6 +16,7 @@ test("「Create Post」がカレント状態になっている", () => {
   expect(link).toHaveAttribute("aria-current", "page");
 });
 
+// 同じテストをパラメータだけ変更して反復
 test.each([
   { url: "/my/posts", name: "My Posts" },
   { url: "/my/posts/123", name: "My Posts" },
